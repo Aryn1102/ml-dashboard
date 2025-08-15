@@ -1,0 +1,6 @@
+employee_id,employee_name,department,salary,join_date
+101,Alice,Engineering,85000,2022-01-15
+102,Bob,Data Science,,2021-05-20
+103,Charlie,Engineering,95000,2022-08-01
+104,David,,60000,2023-03-10
+105,Eve,Data Science,92000,2021-05-20
