@@ -1,0 +1,12 @@
+stages:
+  - analyze
+
+analyze_dataset:
+  stage: analyze
+  image: python:3.10
+  script:
+    - pip install pandas
+    - python agent.py
+  artifacts:
+    paths:
+      - analysis_report.txt

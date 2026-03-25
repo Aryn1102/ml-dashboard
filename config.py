@@ -1,0 +1,1 @@
+DATA_PATH = r"F:/ml-dashboard/data/sample.csv"
