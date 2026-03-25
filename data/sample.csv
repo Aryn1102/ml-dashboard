@@ -1,0 +1,6 @@
+age,salary,city,target
+25,50000,Delhi,1
+30,60000,Mumbai,0
+35,70000,Delhi,1
+28,55000,Bangalore,0
+40,80000,Mumbai,1
