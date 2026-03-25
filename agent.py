@@ -88,7 +88,7 @@ def generate_report(df, target, problem_type, file_name):
         report += "- Unable to determine ML task confidently\n"
 
     report += "- Ready for preprocessing and model development\n"
-    
+
     return report
 
 
@@ -102,10 +102,9 @@ def analyze_dataset(file_path):
 
 
 def find_csv_file():
-    for root, dirs, files in os.walk("."):
-        for file in files:
-            if file.endswith(".csv"):
-                return os.path.join(root, file)
+    path = "data/sample.csv"
+    if os.path.exists(path):
+        return path
     return None
 
 
