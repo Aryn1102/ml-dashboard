@@ -27,3 +27,22 @@ def build_pipeline(preprocessor, model):
         ("model", model)
     ])
     return pipeline
+
+def get_candidate_models(problem_type):
+
+    from sklearn.linear_model import LogisticRegression, LinearRegression
+    from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor, GradientBoostingClassifier, GradientBoostingRegressor
+
+    if problem_type == "classification":
+        return {
+            "logistic_regression": LogisticRegression(max_iter=1000),
+            "random_forest": RandomForestClassifier(random_state=42),
+            "gradient_boosting": GradientBoostingClassifier(random_state=42)
+        }
+
+    else:
+        return {
+            "linear_regression": LinearRegression(),
+            "random_forest": RandomForestRegressor(random_state=42),
+            "gradient_boosting": GradientBoostingRegressor(random_state=42)
+        }
