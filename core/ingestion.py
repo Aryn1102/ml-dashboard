@@ -12,7 +12,7 @@ def download_data(url:str):
 
     try:
         data = StringIO(response.text)
-        df = pd.read_csv(data)
+        df = pd.read_csv(data, sep=None, engine="python")
     except Exception as e:
         raise ValueError(f"Error reading CSV: {e}")
 
@@ -20,7 +20,7 @@ def download_data(url:str):
 
 def load_data(path:str):
     try:
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, sep=None, engine="python")
     except Exception as e:
         raise ValueError(f"Error loading file: {e}")
 
