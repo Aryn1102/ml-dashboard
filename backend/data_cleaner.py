@@ -43,7 +43,7 @@ class DataCleaner:
             else:
                 raise ValueError(f"{col} not found.")
     
-    def replace_nan(self) -> None:
+    def normalize_missing_values(self) -> None:
         self._ensure_loaded()
         self.manager.data.replace([
     "N/A",
@@ -55,3 +55,4 @@ class DataCleaner:
     "-",
     ""
 ], pd.NA, inplace=True)
+    
