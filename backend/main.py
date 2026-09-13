@@ -10,7 +10,7 @@ print(manager.analyzer.shape())
 
 print(manager.analyzer.missing_values())
 
-manager.cleaner.replace_nan()
+manager.cleaner.normalize_missing_values()
 
 manager.cleaner.fill_missing({"age":30})
 

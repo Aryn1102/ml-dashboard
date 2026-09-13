@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 from typing import TYPE_CHECKING
 
-from sqlalchemy import column
 
 if TYPE_CHECKING:
     from backend.data_manager import DataManager
