@@ -15,5 +15,13 @@ def test_data_cleaner():
     assert missing_after- missing_before == unknown_count
     
 
-if __name__ == "__main__":
-    test_data_cleaner()
+def test_remove_duplicates():
+    loader = LoaderFactory.create_loader("train.csv")
+    manager = DataManager(loader)
+    manager.load()
+
+    row_before = manager.analyzer.shape()
+    manager.cleaner.remove_duplicates()
+    duplicates_after = manager.analyzer.duplicates()
+    row_after = manager.analyzer.shape()
+    assert row_after[0] < row_before[0] and duplicates_after.empty 
