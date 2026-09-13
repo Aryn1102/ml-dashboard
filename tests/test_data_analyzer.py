@@ -17,7 +17,7 @@ def test_columns():
 
     columns = manager.analyzer.columns()
 
-    assert columns == manager.data.columns
+    assert columns.equals(manager.data.columns)
 
 def test_dtypes():
     Loader = LoaderFactory.create_loader("train.csv")

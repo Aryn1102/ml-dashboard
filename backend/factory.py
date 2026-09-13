@@ -2,6 +2,7 @@ from typing import IO
 
 from backend.csv_loader import CSVLoader
 from backend.excel_loader import ExcelLoader
+from backend.json_loader import JSONLoader
 from backend.base_loader import DatasetLoader
 from pathlib import Path
 
@@ -9,7 +10,8 @@ class LoaderFactory:
     LOADERS={
         ".csv": CSVLoader,
         ".xlsx": ExcelLoader,
-        ".xls": ExcelLoader
+        ".xls": ExcelLoader,
+        ".json": JSONLoader,
     }
 
     @classmethod
