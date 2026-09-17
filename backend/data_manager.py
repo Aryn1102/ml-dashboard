@@ -2,12 +2,14 @@ from backend.base_loader import DatasetLoader
 import pandas as pd
 from backend.data_analyzer import DataAnalyzer
 from backend.data_cleaner import DataCleaner
+from backend.encoder import DataEncoder
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
         self.data: pd.DataFrame | None = None
         self._analyzer = None
         self._cleaner = None
+        self._encoder = None
 
     def load(self) -> pd.DataFrame:
         self.data = self.loader.load()
@@ -32,3 +34,9 @@ class DataManager:
         if self._cleaner is None:
             self._cleaner = DataCleaner(self)
         return self._cleaner
+
+    @property
+    def encoder(self) -> DataEncoder:
+        if self._encoder is None:
+            self._encoder = DataEncoder(self)
+        return self._encoder
