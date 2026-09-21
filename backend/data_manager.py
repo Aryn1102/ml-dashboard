@@ -3,6 +3,7 @@ import pandas as pd
 from backend.data_analyzer import DataAnalyzer
 from backend.data_cleaner import DataCleaner
 from backend.encoder import DataEncoder
+from backend.data_scaler import DataScaler
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
@@ -10,6 +11,7 @@ class DataManager:
         self._analyzer = None
         self._cleaner = None
         self._encoder = None
+        self._scaler = None
 
     def load(self) -> pd.DataFrame:
         self.data = self.loader.load()
@@ -40,3 +42,9 @@ class DataManager:
         if self._encoder is None:
             self._encoder = DataEncoder(self)
         return self._encoder
+
+    @property
+    def scaler(self) -> DataScaler:
+        if self._scaler is None:
+            self._scaler = DataScaler(self)
+        return self._scaler
