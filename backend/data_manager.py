@@ -4,6 +4,7 @@ from backend.data_analyzer import DataAnalyzer
 from backend.data_cleaner import DataCleaner
 from backend.encoder import DataEncoder
 from backend.data_scaler import DataScaler
+from backend.feature_selector import FeatureSelector
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
@@ -12,6 +13,7 @@ class DataManager:
         self._cleaner = None
         self._encoder = None
         self._scaler = None
+        self._feature_selector = None
 
     def load(self) -> pd.DataFrame:
         self.data = self.loader.load()
@@ -48,3 +50,9 @@ class DataManager:
         if self._scaler is None:
             self._scaler = DataScaler(self)
         return self._scaler
+
+    @property
+    def feature_selector(self) -> FeatureSelector:
+            if self._feature_selector is None:
+                self._feature_selector = FeatureSelector(self)
+            return self._feature_selector
