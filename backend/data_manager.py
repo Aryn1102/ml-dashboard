@@ -5,6 +5,7 @@ from backend.data_cleaner import DataCleaner
 from backend.encoder import DataEncoder
 from backend.data_scaler import DataScaler
 from backend.feature_selector import FeatureSelector
+from backend.eda import EDA
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
@@ -14,6 +15,7 @@ class DataManager:
         self._encoder = None
         self._scaler = None
         self._feature_selector = None
+        self._eda = None
 
     def load(self) -> pd.DataFrame:
         self.data = self.loader.load()
@@ -56,3 +58,9 @@ class DataManager:
             if self._feature_selector is None:
                 self._feature_selector = FeatureSelector(self)
             return self._feature_selector
+
+    @property
+    def eda(self) -> EDA:
+        if self._eda is None:
+            self._eda = EDA(self)
+        return self._eda
