@@ -33,8 +33,29 @@ class EDA:
 
         return stats
         
-    def outliers(self, column):
-        pass
+    def outliers(self, column) -> dict:
+        self._ensure_loaded()
+        if not column in self.manager.data.columns:
+             raise ValueError("Invalid Column")
+        if not column in self.manager.analyzer.numeric_columns():
+             raise ValueError("Not a numerical column.")
+        
+        outlier = {}
+        q1, q3 = self.manager.data[column].quantile([0.25, 0.75])
+        iqr = q3 - q1
+        outlier["iqr"] = iqr
+        outlier["lower_bound"] = q1 - 1.5 * iqr
+        outlier["upper_bound"] = q3 + 1.5 * iqr
+        mask = (
+                (self.manager.data[column] < outlier["lower_bound"]) |
+                (self.manager.data[column] > outlier["upper_bound"])
+        )
+        outlier_indices = self.manager.data.index[mask].tolist()
+        outlier_data = self.manager.data.loc[mask, column].tolist()
+        outlier["outlier_indices"] = outlier_indices
+        outlier["outlier_data"] = outlier_data
+        
+        return outlier
 
     def correlation(self, column):
         pass
