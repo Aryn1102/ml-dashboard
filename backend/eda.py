@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from backend.data_manager import DataManager
-
+import pandas as pd
 class EDA:
     def __init__(self, manager: "DataManager") -> None:
         self.manager = manager
@@ -12,9 +12,9 @@ class EDA:
             
     def distributions(self, column) -> dict:
         self._ensure_loaded()
-        if not column in self.manager.data.columns:
+        if column not in self.manager.data.columns:
             raise ValueError("Column doesnt exist")
-        if not column in self.manager.analyzer.numeric_columns():
+        if column not in self.manager.analyzer.numeric_columns():
              raise ValueError("Column is not numeric")
         
         stats = {}
@@ -35,9 +35,9 @@ class EDA:
         
     def outliers(self, column) -> dict:
         self._ensure_loaded()
-        if not column in self.manager.data.columns:
+        if column not in self.manager.data.columns:
              raise ValueError("Invalid Column")
-        if not column in self.manager.analyzer.numeric_columns():
+        if column not in self.manager.analyzer.numeric_columns():
              raise ValueError("Not a numerical column.")
         
         outlier = {}
@@ -57,5 +57,11 @@ class EDA:
         
         return outlier
 
-    def correlation(self, column):
-        pass
+    def correlation(self) -> pd.DataFrame:
+        self._ensure_loaded()
+        num_col = self.manager.analyzer.numeric_columns()
+        if len(num_col) < 2:
+            raise ValueError("At least two numeric columns are required for correlation analysis.")
+        corr_matrix = self.manager.data[num_col].corr(method="pearson")
+
+        return corr_matrix

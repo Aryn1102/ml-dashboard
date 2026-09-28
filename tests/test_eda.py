@@ -2,6 +2,7 @@ import pandas as pd
 from backend.data_manager import DataManager
 from backend.factory import LoaderFactory
 import pytest
+
 def test_distributions(tmp_path):
     df = pd.DataFrame({
         "A": [1, 2, 2, 3, 4, 5, 6, 7, 8],
@@ -16,6 +17,8 @@ def test_distributions(tmp_path):
     manager = DataManager(loader)
     manager.load()
 
+    assert "C" not in manager.data.columns
+    assert "Category" not in manager.analyzer.numeric_columns()
     distributions = manager.eda.distributions("A")
     assert distributions["mean"] == pytest.approx(4.2222222222)
     assert distributions["median"] == 4
@@ -29,7 +32,8 @@ def test_distributions(tmp_path):
 
 def test_outliers(tmp_path):
     df = pd.DataFrame({
-        "A": [10, 11, 12, 13, 14, 15, 16, 17, 100]
+        "A": [10, 11, 12, 13, 14, 15, 16, 17, 100],
+        "Category": ["Apple", "Banana", "Cat", "Dog", "elephant", "Fish", "Grapes", "hen", "India"]
     })
     temp_file = tmp_path / "test_data.csv"
     df.to_csv(temp_file, index=False)
@@ -37,9 +41,51 @@ def test_outliers(tmp_path):
     manager = DataManager(loader)
     manager.load()
 
+    assert "B" not in manager.data.columns
+    assert "Category" not in manager.analyzer.numeric_columns()
     outliers = manager.eda.outliers("A")
     assert outliers["iqr"] == 4
     assert outliers["lower_bound"] == 6
     assert outliers["upper_bound"] == 22
     assert outliers["outlier_indices"] == [8]
     assert outliers["outlier_data"] == [100]
+
+def test_correlations(tmp_path):
+    df = pd.DataFrame({
+        "A": [1, 2, 3, 4, 5],
+        "B": [2, 4, 6, 8, 10],
+        "C": [10, 8, 6, 4, 2],
+        "D": ["Apple", "Banana", "Cat", "dog","egg"]
+    })
+    temp_file = tmp_path / "test_data.csv"
+    df.to_csv(temp_file, index = False)
+    loader = LoaderFactory.create_loader(temp_file)
+    manager = DataManager(loader)
+    manager.load()
+
+    corr_matrix = manager.eda.correlation()
+
+    assert "D" not in corr_matrix.columns
+    assert corr_matrix.loc["A", "A"] ==  1
+    assert corr_matrix.loc["B", "B"] ==  1
+    assert corr_matrix.loc["C", "C"] ==  1
+
+    assert corr_matrix.loc["A", "B"] ==  1
+    assert corr_matrix.loc["A", "C"] == -1
+    assert corr_matrix.loc["B", "C"] == -1
+
+def test_correlation_single_numeric_column(tmp_path):
+    df = pd.DataFrame({
+        "A": [1, 2, 3, 4, 5],
+        "Category": ["Apple", "Banana", "Cat", "Dog", "Egg"]
+    })
+
+    temp_file = tmp_path / "test_data.csv"
+    df.to_csv(temp_file, index=False)
+
+    loader = LoaderFactory.create_loader(temp_file)
+    manager = DataManager(loader)
+    manager.load()
+
+    with pytest.raises(ValueError):
+        manager.eda.correlation()
