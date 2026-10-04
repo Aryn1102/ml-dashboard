@@ -6,6 +6,7 @@ from backend.encoder import DataEncoder
 from backend.data_scaler import DataScaler
 from backend.feature_selector import FeatureSelector
 from backend.eda import EDA
+from backend.ml import ML
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
@@ -14,6 +15,7 @@ class DataManager:
         self._cleaner = None
         self._encoder = None
         self._scaler = None
+        self._ml = None
         self._feature_selector = None
         self._eda = None
 
@@ -64,3 +66,8 @@ class DataManager:
         if self._eda is None:
             self._eda = EDA(self)
         return self._eda
+    @property
+    def ml(self) -> ML:
+        if self._ml is None:
+            self._ml = ML(self)
+        return self._ml
