@@ -14,7 +14,7 @@ class ML:
         if self.manager.data is None:
             raise ValueError("Dataset not Loaded. Call Datamanager.load() first")
         
-    def train(self, target, task, model):
+    def train(self, target, task, model) -> tuple:
         self._ensure_loaded()
         allowed_tasks = {"classification", "regression"}
         models = {

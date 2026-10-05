@@ -7,6 +7,7 @@ from backend.data_scaler import DataScaler
 from backend.feature_selector import FeatureSelector
 from backend.eda import EDA
 from backend.ml import ML
+from backend.evaluate import Evaluation
 class DataManager:
     def __init__(self, loader:DatasetLoader):
         self.loader = loader
@@ -18,7 +19,8 @@ class DataManager:
         self._ml = None
         self._feature_selector = None
         self._eda = None
-
+        self._evaluation = None
+        
     def load(self) -> pd.DataFrame:
         self.data = self.loader.load()
         return self.data
@@ -71,3 +73,9 @@ class DataManager:
         if self._ml is None:
             self._ml = ML(self)
         return self._ml
+
+    @property
+    def evaluation(self) -> Evaluation:
+        if self._evaluation is None:
+            self._evaluation = Evaluation()
+        return self._evaluation
