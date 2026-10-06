@@ -2,9 +2,6 @@ from backend.base_loader import DatasetLoader
 import pandas as pd
 from backend.data_analyzer import DataAnalyzer
 from backend.data_cleaner import DataCleaner
-from backend.encoder import DataEncoder
-from backend.data_scaler import DataScaler
-from backend.feature_selector import FeatureSelector
 from backend.eda import EDA
 from backend.ml import ML
 from backend.evaluate import Evaluation
@@ -14,10 +11,7 @@ class DataManager:
         self.data: pd.DataFrame | None = None
         self._analyzer = None
         self._cleaner = None
-        self._encoder = None
-        self._scaler = None
         self._ml = None
-        self._feature_selector = None
         self._eda = None
         self._evaluation = None
         
@@ -44,24 +38,6 @@ class DataManager:
         if self._cleaner is None:
             self._cleaner = DataCleaner(self)
         return self._cleaner
-
-    @property
-    def encoder(self) -> DataEncoder:
-        if self._encoder is None:
-            self._encoder = DataEncoder(self)
-        return self._encoder
-
-    @property
-    def scaler(self) -> DataScaler:
-        if self._scaler is None:
-            self._scaler = DataScaler(self)
-        return self._scaler
-
-    @property
-    def feature_selector(self) -> FeatureSelector:
-            if self._feature_selector is None:
-                self._feature_selector = FeatureSelector(self)
-            return self._feature_selector
 
     @property
     def eda(self) -> EDA:
