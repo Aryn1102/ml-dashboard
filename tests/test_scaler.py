@@ -1,20 +1,30 @@
-from backend.data_manager import DataManager
-from backend.factory import LoaderFactory
 import pytest
+from backend.preprocessing.data_scaler import DataScaler
 
-def test_Standard_Scaler():
-    loader = LoaderFactory.create_loader("train.csv")
-    manager = DataManager(loader)
-    manager.load()
+@pytest.fixture
+def scaler():
+    return DataScaler()
 
-    before_cat_col = manager.analyzer.categorical_columns()
-    before_rows, _ = manager.analyzer.shape()
-    before_col_count = len(manager.analyzer.columns())
-    before_num_col_name = manager.analyzer.numeric_columns()
-    manager.scaler.standard_scaler()
-    assert manager.data.shape == (before_rows, before_col_count)
-    assert before_num_col_name == manager.data.select_dtypes(include=['int64', 'float64']).columns.to_list()
-    assert before_cat_col == manager.data.select_dtypes(include=['object', 'category']).columns.to_list()
-    for col in before_num_col_name:
-        assert manager.data[col].mean() == pytest.approx(0)
-        assert manager.data[col].std(ddof=0) == pytest.approx(1)
+@pytest.fixture
+def X():
+    return [[1, 2], [3, 4]]
+
+def test_fit(scaler, X):
+    scaler.fit(X)
+    assert scaler._is_fitted == True
+
+def test_transform(scaler, X):
+    scaler.fit(X)
+    result = scaler.transform(X)
+    assert result.mean(axis = 0) == pytest.approx(0)
+    assert result.std(axis = 0) == pytest.approx(1)
+
+def test_fit_transform(scaler, X):
+    result = scaler.fit_transform(X)
+    assert scaler._is_fitted == True
+    assert result.mean(axis = 0) == pytest.approx(0)
+    assert result.std(axis = 0) == pytest.approx(1)
+
+def test_transform_before_fit(scaler, X):
+    with pytest.raises(ValueError):
+        scaler.transform(X)
