@@ -1,22 +1,24 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from backend.data_manager import DataManager
 from sklearn.preprocessing import OneHotEncoder
 import pandas as pd
 
 class DataEncoder:
-    def __init__(self, manager: "DataManager") -> None:
-        self.manager = manager
+    def __init__(self):
+        self.encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+        self._is_fitted = False
 
-    def _ensure_loaded(self) -> None:
-        if self.manager.data is None:
-            raise ValueError("Dataset not loaded. Call DataManager.load() first.")
+    def fit(self, X: pd.DataFrame) -> None:
+        self.encoder.fit(X)
+        self._is_fitted = True
 
-    def one_hot_encode(self) -> None:
-        self._ensure_loaded()
-        data = self.manager.data[self.manager.analyzer.categorical_columns()]
-        encoder = OneHotEncoder(sparse_output=False, drop='first')
-        encoded_data = encoder.fit_transform(data)
-        encoded_df = pd.DataFrame(encoded_data, columns=encoder.get_feature_names_out())
-        self.manager.data = pd.concat([self.manager.data.drop(columns=data.columns), encoded_df], axis=1)
+    def transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        if self._is_fitted:
+            index = X.index
+            transformed_data = self.encoder.transform(X)
+            column_names = self.encoder.get_feature_names_out()
+            return pd.DataFrame(transformed_data, columns=column_names, index=index)
+        else:
+            raise ValueError("Encoder has not been fitted.")
+
+    def fit_transform(self, X: pd.DataFrame) -> pd.DataFrame:
+        self.fit(X)
+        return self.transform(X)
