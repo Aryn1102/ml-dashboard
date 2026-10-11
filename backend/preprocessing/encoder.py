@@ -3,7 +3,7 @@ import pandas as pd
 
 class DataEncoder:
     def __init__(self):
-        self.encoder = OneHotEncoder(sparse=False, handle_unknown='ignore')
+        self.encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
         self._is_fitted = False
 
     def fit(self, X: pd.DataFrame) -> None:
