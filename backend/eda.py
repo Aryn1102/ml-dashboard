@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from backend.data_manager import DataManager
 import pandas as pd
+import math
+import numpy as np
 class EDA:
     def __init__(self, manager: "DataManager") -> None:
         self.manager = manager
@@ -65,3 +67,38 @@ class EDA:
         corr_matrix = self.manager.data[num_col].corr(method="pearson")
 
         return corr_matrix
+
+    def correlation_pairs(
+        self, threshold: float
+    ) -> list[tuple[str, str, float]]:
+        self._ensure_loaded()
+
+        if isinstance(threshold, bool) or not isinstance(
+            threshold, (int, float, np.integer, np.floating)
+        ):
+            raise TypeError("Threshold must be a numeric value.")
+
+        if not math.isfinite(threshold) or not 0 <= threshold <= 1:
+            raise ValueError("Threshold must be finite and between 0 and 1.")
+
+        num_col = self.manager.analyzer.numeric_columns()
+        if len(num_col) < 2:
+            raise ValueError(
+                "At least two numeric columns are required for correlation analysis."
+            )
+
+        corr_matrix = self.manager.data[num_col].corr(method="pearson")
+        high_corr_pairs = []
+
+        for i in range(len(num_col)):
+            for j in range(i + 1, len(num_col)):
+                value = corr_matrix.iloc[i, j]
+
+                if math.isfinite(value) and abs(value) >= threshold:
+                    high_corr_pairs.append((
+                        corr_matrix.index[i],
+                        corr_matrix.columns[j],
+                        float(value)
+                    ))
+
+        return high_corr_pairs
