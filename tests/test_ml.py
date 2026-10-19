@@ -144,3 +144,14 @@ def test_missing_values_handling(manager_setup_with_missing_values):
     np.testing.assert_array_equal(statistics_categorical_onehot[0], ['Agra', 'Delhi', 'Noida'])
     assert len(y_test) == len(y_pred)
     assert len(y_test) > 0
+
+def test_onehotencoder_handle_unknown():
+    encoder = OneHotEncoder(handle_unknown='ignore')
+    data = np.array(["Delhi", "Mumbai", "Noida"]).reshape(-1, 1)
+    encoder.fit(data)
+    new_data = np.array([["Delhi", "Noida", "Agra"]]).reshape(-1, 1)
+    transformed_data = encoder.transform(new_data).toarray()
+    expected_output = np.array([[1., 0., 0.],
+                                [0., 0., 1.],
+                                [0., 0., 0.]])
+    np.testing.assert_array_equal(transformed_data, expected_output)
