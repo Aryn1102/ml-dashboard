@@ -62,3 +62,36 @@ if uploaded_file is not None:
     st.subheader("Duplicate")
     duplicates_shape = manager.analyzer.duplicates().shape
     st.metric("Duplicate Rows", duplicates_shape[0])
+
+    st.subheader("Model Training")
+    if not data.columns.empty:
+        target_column = st.selectbox("Select the target column", options=data.columns)
+    else:
+        st.warning("Dataset is Empty.")
+        st.stop()
+
+    task = st.selectbox(
+        "Select the Ml task",
+        options=["classification", "regression"]
+        )
+
+    models={
+        "classification": [
+            "logistic_regression",
+            "random_forest"
+        ],
+        "regression": [
+            "linear_regression",
+            "random_forest"
+        ]
+    }
+
+    model_name = st.selectbox("Select the ML model", options=models[task])
+
+    if st.button("Train Model"):
+        pipeline, y_test, y_pred = manager.ml.train(
+        target=target_column,
+        task=task,
+        model=model_name
+        )
+        st.write("Model Trained.")
