@@ -31,7 +31,7 @@ class DataCleaner:
         self._ensure_loaded()
         for col in columns:
             if col in self.manager.data.columns:
-                self.manager.data[col] = self.manager.data[col].astype(str).str.lower().str.strip()
+                self.manager.data[col] = self.manager.data[col].astype("string").str.lower().str.strip()
             else:
                 raise ValueError(f"{col} not found.")
     
