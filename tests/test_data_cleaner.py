@@ -2,19 +2,26 @@ from backend.factory import LoaderFactory
 from backend.data_manager import DataManager    
 import pandas as pd
 
+
 def test_normalize_missing_values():
     loader = LoaderFactory.create_loader("train.csv")
     manager = DataManager(loader)
     manager.load()
 
-    
-    unknown_count = manager.data["deck"].value_counts()["unknown"]
+    unknown_count = (
+        manager.data["deck"].eq("unknown").sum()
+    )
     missing_before = manager.data["deck"].isna().sum()
+
+    assert unknown_count > 0
+
     manager.cleaner.normalize_missing_values()
+
     missing_after = manager.data["deck"].isna().sum()
-    assert "unknown" not in manager.data["deck"]
-    assert missing_after- missing_before == unknown_count
-    
+
+    assert not manager.data["deck"].eq("unknown").any()
+    assert missing_after - missing_before == unknown_count
+
 
 def test_remove_duplicates():
     loader = LoaderFactory.create_loader("train.csv")
