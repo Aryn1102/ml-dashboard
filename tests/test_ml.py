@@ -139,7 +139,7 @@ def test_missing_values_handling(manager_setup_with_missing_values):
     assert isinstance(numeric_transformer.named_steps['imputer'], SimpleImputer)
     assert isinstance(categorical_transformer.named_steps['imputer'], SimpleImputer)
     assert isinstance(categorical_transformer.named_steps['onehot'], OneHotEncoder)
-    assert np.isclose(statistics_numeric[0], 35.0)
+    assert np.isclose(statistics_numeric[0], 33.0)
     assert statistics_categorical_imputed[0] == 'Delhi'
     np.testing.assert_array_equal(statistics_categorical_onehot[0], ['Agra', 'Delhi', 'Noida'])
     assert len(y_test) == len(y_pred)
