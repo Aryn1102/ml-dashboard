@@ -20,6 +20,8 @@ class LoaderFactory:
             filename = str(source)
         elif hasattr(source, "name"):
             filename = source.name
+        elif hasattr(source, "filename"):
+            filename = source.filename
         else:
             raise ValueError("Unsupported File")
         extension = Path(filename).suffix.lower()
